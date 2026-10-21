@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#003DA5">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>广东城际</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app-shell" id="app">
+        <!-- Header -->
+        <header class="app-header">
+            <button class="back-btn" id="backBtn" onclick="goBack()" data-icon="back"></button>
+            <h1 id="pageTitle">广东城际</h1>
+        </header>
+
+        <!-- Main Content -->
+        <main class="app-content" id="appContent">
+
+            <!-- ========== HOME PAGE ========== -->
+            <div class="page active" id="page-home">
+                <!-- Banner -->
+                <div class="home-banner">
+                    <div class="banner-title">广东城际</div>
+                    <div class="banner-subtitle">便捷出行，畅享湾区</div>
+                    <div class="banner-time" id="currentTime">加载中...</div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <div class="quick-action" onclick="navigateTo('travel')">
+                        <div class="qa-icon" data-icon="train"></div>
+                        <div class="qa-label">出行助手</div>
+                    </div>
+                    <div class="quick-action" onclick="navigateTo('route-map')">
+                        <div class="qa-icon" data-icon="map"></div>
+                        <div class="qa-label">线路图</div>
+                    </div>
+                    <div class="quick-action" onclick="navigateTo('service')">
+                        <div class="qa-icon" data-icon="chat"></div>
+                        <div class="qa-label">服务</div>
+                    </div>
+                </div>
+
+                <!-- Function Grid -->
+                <div class="func-grid-section">
+                    <div class="section-title">全部服务</div>
+                    <div class="func-grid">
+                        <div class="func-item" onclick="navigateTo('travel')">
+                            <div class="func-icon icon-blue" data-icon="train"></div>
+                            <div class="func-label">出行助手</div>
+                        </div>
+                        <div class="func-item" onclick="navigateTo('route-map')">
+                            <div class="func-icon icon-orange" data-icon="map"></div>
+                            <div class="func-label">线路图</div>
+                        </div>
+                        <div class="func-item" onclick="navigateTo('ticket')">
+                            <div class="func-icon icon-red" data-icon="ticket"></div>
+                            <div class="func-label">票务服务</div>
+                        </div>
+                        <div class="func-item" onclick="navigateTo('lost')">
+                            <div class="func-icon icon-purple" data-icon="search"></div>
+                            <div class="func-label">失物招领</div>
+                        </div>
+                        <div class="func-item" onclick="navigateTo('service')">
+                            <div class="func-icon icon-teal" data-icon="chat"></div>
+                            <div class="func-label">服务</div>
+                        </div>
+                        <div class="func-item" onclick="navigateTo('facilities')">
+                            <div class="func-icon icon-cyan" data-icon="map"></div>
+                            <div class="func-label">车站设施</div>
+                        </div>
+                        </div>
+                </div>
+
+                <!-- Service Notice -->
+                <div class="service-notice">
+                    <div class="notice-title"><span data-icon="info" style="display:inline-block;vertical-align:-2px;margin-right:6px;"></span>运营公告</div>
+                    <div class="notice-text" id="noticeText">
+                        穗深城际铁路（竹料至新塘南）定于2026年7月31日12时开通运营。请以中国铁路12306官方售票系统实际查询结果为准。
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== TRAVEL PAGE (出行助手 + 时刻查询合并) ========== -->
+            <div class="page travel-page" id="page-travel">
+                <div class="travel-form">
+                    <div class="form-group">
+                        <label class="form-label">出发站</label>
+                        <input class="form-input" id="fromStation" placeholder="选择出发站" readonly onclick="showStationPicker('from')">
+                    </div>
+                    <div class="form-swap">
+                        <button class="swap-btn" data-icon="swap" onclick="swapStations()"></button>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">到达站</label>
+                        <input class="form-input" id="toStation" placeholder="选择到达站" readonly onclick="showStationPicker('to')">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">乘坐日期</label>
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <input class="form-input" id="travelDate" type="date" onchange="updateDateInfo()" style="flex:0 0 auto;">
+                            <span id="dateInfo" style="font-size:13px;color:var(--text-light);white-space:nowrap;"></span>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:10px;margin-top:8px;">
+                        <button class="btn-primary" onclick="searchTrains()" style="flex:1;"><span data-icon="search" style="width:18px;height:18px;"></span>查询车次</button>
+                    </div>
+                </div>
+                <div class="travel-results">
+                    <div class="result-tabs">
+                        <div class="result-tab active" id="tabRecommend" onclick="switchTrainView('recommend')">推荐车次</div>
+                        <div class="result-tab" id="tabAll" onclick="switchTrainView('all')">全部时刻</div>
+                    </div>
+                    <div class="service-notice" style="margin:0 0 12px;">
+                        <div class="notice-text" style="font-size:12px;">1. 车次、时刻表信息为实时数据，仅供参考，请以实际情况为准<br>2. 请选择出发站和到达站后点击查询</div>
+                    </div>
+                    <div id="travelResults"></div>
+                </div>
+            </div>
+
+            <!-- ========== ROUTE MAP PAGE ========== -->
+            <div class="page" id="page-route-map">
+                <div class="route-map-container">
+                    <p style="font-size:14px;font-weight:600;color:var(--primary);margin-bottom:12px;align-self:flex-start;">广东城际铁路线网图</p>
+                    <img id="routeMapImage" src="https://gdcj.gzmtr.com/wxMetro/common/imgs/xlt3.jpg" alt="城际线路图" onerror="handleMapError()">
+                    <p class="map-tip">点击图片可放大查看 | 信息仅供参考，请以车站实际公告为准</p>
+                </div>
+            </div>
+
+            <!-- ========== TICKET PAGE ========== -->
+            <div class="page ticket-page" id="page-ticket">
+                <div class="ticket-card ticket-card-action card-12306" onclick="openApp('12306')">
+                    <div class="ticket-title">
+                        <span data-icon="train" style="color:#003DA5;"></span>
+                        <span>12306购票</span>
+                        <span class="badge-12306">官方</span>
+                        <span class="ticket-arrow" data-icon="chevronRight" style="margin-left:auto;color:var(--text-light);"></span>
+                    </div>
+                    <div class="ticket-desc">通过铁路12306官方系统购买广东城际车票</div>
+                </div>
+                <div class="ticket-card ticket-card-action card-qrcode" onclick="openApp('qrcode')">
+                    <div class="ticket-title">
+                        <span data-icon="qrcode" style="color:#C62828;"></span>
+                        <span>城际乘车码</span>
+                        <span class="badge-qrcode">扫码乘车</span>
+                        <span class="ticket-arrow" data-icon="chevronRight" style="margin-left:auto;color:var(--text-light);"></span>
+                    </div>
+                    <div class="ticket-desc">使用广州地铁APP城际乘车码扫码过闸，即扫即走</div>
+                </div>
+                <div class="ticket-card" onclick="showTicketDetail('guide')">
+                    <div class="ticket-title">
+                        <span data-icon="book" style="color:var(--primary);"></span>
+                        <span>购票指引</span>
+                        <span class="ticket-arrow" data-icon="chevronRight" style="margin-left:auto;color:var(--text-light);"></span>
+                    </div>
+                    <div class="ticket-desc">购票方式、票务须知、票价查询、退改签规则全指南</div>
+                </div>
+            </div>
+
+            <!-- ========== SERVICE PAGE ========== -->
+            <div class="page" id="page-service">
+                <!-- 双 Tab 切换 -->
+                <div class="result-tabs" id="serviceTabs" style="margin:12px 16px 0;">
+                    <div class="result-tab active" id="tabService" onclick="switchServiceTab('service')">客服中心</div>
+                    <div class="result-tab" id="tabInfo" onclick="switchServiceTab('info')">旅客须知</div>
+                </div>
+                <div id="serviceTabContent">
+                    <div class="service-form">
+                        <div class="form-title"><span data-icon="chat" style="vertical-align:-3px;margin-right:8px;color:var(--primary);"></span>在线客服</div>
+                    <div class="form-group">
+                        <label class="form-label">工单主题 *</label>
+                        <select class="form-select" id="serviceSubject">
+                            <option value="投诉">投诉</option>
+                            <option value="建议">建议</option>
+                            <option value="咨询">咨询</option>
+                            <option value="表扬">表扬</option>
+                            <option value="其他">其他</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">姓名 *</label>
+                        <input class="form-input" id="serviceName" placeholder="请输入您的姓名">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">联系电话 *</label>
+                        <input class="form-input" id="servicePhone" placeholder="请输入您的手机号码" type="tel">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">所在线路</label>
+                        <select class="form-select" id="serviceLine">
+                            <option value="">请选择</option>
+                            <option value="广清城际">广清城际</option>
+                            <option value="广州东环城际">广州东环城际</option>
+                            <option value="穗深城际">穗深城际</option>
+                            <option value="广肇城际">广肇城际</option>
+                            <option value="广惠城际">广惠城际</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">所在站点</label>
+                        <input class="form-input" id="serviceStation" placeholder="请输入站点名称">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">具体地址 *</label>
+                        <input class="form-input" id="serviceAddress" placeholder="请输入您所在的具体地址">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">诉求内容 *</label>
+                        <textarea class="form-textarea" id="serviceContent" placeholder="请详细描述您的诉求或问题..." rows="4"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">是否需要回复 *</label>
+                        <div class="service-reply" style="display:flex;gap:16px;padding-top:4px;">
+                            <label style="display:flex;align-items:center;gap:6px;font-size:14px;">
+                                <input type="radio" name="serviceReply" value="是" checked style="accent-color:var(--primary);width:16px;height:16px;"> 是
+                            </label>
+                            <label style="display:flex;align-items:center;gap:6px;font-size:14px;">
+                                <input type="radio" name="serviceReply" value="否" style="accent-color:var(--primary);width:16px;height:16px;"> 否
+                            </label>
+                        </div>
+                    </div>
+                    <button class="btn-primary" onclick="submitService()">提交工单</button>
+                </div>
+                <div class="service-notice" style="margin:0 16px 16px;">
+                    <div class="notice-title"><span data-icon="phone" style="display:inline-block;vertical-align:-2px;margin-right:6px;"></span>服务热线</div>
+                    <div class="notice-text">服务热线：<a href="tel:02096891" style="color:var(--primary);font-weight:600;text-decoration:underline;">020-96891</a><br>营业时间：06:00 - 23:00</div>
+                </div>
+                </div>
+
+                <!-- 旅客须知 Tab 内容 -->
+                <div id="infoTabContent" style="display:none;">
+                    <div class="info-section" style="margin-top:12px;">
+                        <div class="info-section-header" onclick="toggleInfo(this)">
+                            <span class="info-title"><span data-icon="doc" style="color:var(--primary);"></span>广东城际旅客须知</span>
+                            <span class="info-arrow" data-icon="chevronDown"></span>
+                        </div>
+                        <div class="info-section-body">
+                            <p>欢迎乘坐广东城际铁路！为了保障您的出行安全和权益，请仔细阅读以下须知：</p>
+                            <ul>
+                                <li>请提前购票，凭有效身份证件进站乘车</li>
+                                <li>请配合车站安检，严禁携带易燃、易爆等危险品</li>
+                                <li>请照看好老人和儿童，注意站台安全</li>
+                                <li>如遇问题，请及时联系车站工作人员</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="info-section">
+                        <div class="info-section-header" onclick="toggleInfo(this)">
+                            <span class="info-title"><span data-icon="train" style="color:var(--primary);"></span>乘车安全指引</span>
+                            <span class="info-arrow" data-icon="chevronDown"></span>
+                        </div>
+                        <div class="info-section-body">
+                            <ul>
+                                <li>请在安全线内候车，先下后上</li>
+                                <li>列车停稳后方可上下车</li>
+                                <li>请勿倚靠车门，防止夹伤</li>
+                                <li>请勿在车厢内奔跑、打闹</li>
+                                <li>紧急情况请使用紧急通话装置</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="info-section">
+                        <div class="info-section-header" onclick="toggleInfo(this)">
+                            <span class="info-title"><span data-icon="alert" style="color:var(--accent);"></span>禁止和限制携带物品</span>
+                            <span class="info-arrow" data-icon="chevronDown"></span>
+                        </div>
+                        <div class="info-section-body">
+                            <p><strong>禁止携带：</strong></p>
+                            <ul>
+                                <li>枪支、弹药、管制器具</li>
+                                <li>爆炸物品、易燃易爆物品</li>
+                                <li>剧毒、放射性、腐蚀性物品</li>
+                                <li>传染病病原体</li>
+                                <li>危害列车运行安全的其他物品</li>
+                            </ul>
+                            <p style="margin-top:10px;"><strong>限制携带：</strong></p>
+                            <ul>
+                                <li>酒类：包装完好，累计不超过3000毫升</li>
+                                <li>锐器：刀刃长度不超过60毫米</li>
+                                <li>充电宝：单块额定能量不超过100Wh</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="info-section">
+                        <div class="info-section-header" onclick="toggleInfo(this)">
+                            <span class="info-title"><span data-icon="phone" style="color:var(--primary);"></span>车票实名制公告</span>
+                            <span class="info-arrow" data-icon="chevronDown"></span>
+                        </div>
+                        <div class="info-section-body">
+                            <p>根据《铁路旅客车票实名制管理办法》相关规定，广东城际铁路实行车票实名制管理。</p>
+                            <ul>
+                                <li>乘车人须凭有效身份证件购票和乘车</li>
+                                <li>有效身份证件包括：居民身份证、护照、港澳台居民居住证等</li>
+                                <li>进站乘车须人、证、票一致</li>
+                                <li>未满14周岁的儿童须随同成年人旅客旅行</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="info-section">
+                        <div class="info-section-header" onclick="toggleInfo(this)">
+                            <span class="info-title"><span data-icon="ticket" style="color:var(--primary);"></span>票务规则</span>
+                            <span class="info-arrow" data-icon="chevronDown"></span>
+                        </div>
+                        <div class="info-section-body">
+                            <ul>
+                                <li>车票有效期为"当日使用一次有效"</li>
+                                <li>可改乘当日其他列车</li>
+                                <li>进出站须使用同一张车票</li>
+                                <li>一张车票不可多人同时使用</li>
+                                <li>乘车时限为360分钟，超时需补缴超时车费</li>
+                                <li>刷卡进站需余额≥34元</li>
+                            </ul>
+                            <p style="margin-top:10px;">如需了解更多，请拨打服务热线 020-96891</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== LOST & FOUND PAGE ========== -->
+            <div class="page lost-page" id="page-lost">
+                <div class="lost-search">
+                    <div class="form-group">
+                        <label class="form-label">查找遗失物品</label>
+                        <input class="form-input" id="lostKeyword" placeholder="输入物品名称、颜色等关键词" onkeydown="if(event.key==='Enter')searchLost()">
+                    </div>
+                    <div class="form-row" style="gap:10px;margin-top:12px;">
+                        <div class="form-group" style="flex:1;">
+                            <select class="form-select" id="lostLine">
+                                <option value="">全部线路</option>
+                                <option value="广清城际">广清城际</option>
+                                <option value="广州东环城际">广州东环城际</option>
+                                <option value="穗深城际">穗深城际</option>
+                                <option value="广肇城际">广肇城际</option>
+                                <option value="广惠城际">广惠城际</option>
+                            </select>
+                        </div>
+                        <button class="btn-primary" onclick="searchLost()" style="width:auto;padding:0 24px;height:44px;flex-shrink:0;">查询</button>
+                    </div>
+                </div>
+                <div class="lost-list" id="lostList">
+                    <div class="empty-state">
+                        <div class="empty-icon" data-icon="search"></div>
+                        <div class="empty-text">输入关键词查询遗失物品</div>
+                    </div>
+                </div>
+                <div class="lost-register">
+                    <div class="lost-register-toggle" onclick="toggleLostRegister()">
+                        <span data-icon="edit" style="display:inline-block;vertical-align:-2px;margin-right:6px;color:var(--primary);"></span>
+                        登记遗失物品
+                        <span class="lost-register-arrow" id="lostRegisterArrow">&#9662;</span>
+                    </div>
+                    <div class="lost-register-form" id="lostRegisterForm">
+                        <div class="form-group">
+                            <label class="form-label">物品名称 *</label>
+                            <input class="form-input" id="lostReportName" placeholder="如：黑色双肩背包">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">物品描述</label>
+                            <textarea class="form-textarea" id="lostReportDesc" placeholder="请描述物品颜色、品牌、特征、内含物品等" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">遗失线路</label>
+                            <select class="form-select" id="lostReportLine">
+                                <option value="">请选择</option>
+                                <option value="广清城际">广清城际</option>
+                                <option value="广州东环城际">广州东环城际</option>
+                                <option value="穗深城际">穗深城际</option>
+                                <option value="广肇城际">广肇城际</option>
+                                <option value="广惠城际">广惠城际</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">遗失站点 / 地点 *</label>
+                            <input class="form-input" id="lostReportPlace" placeholder="如：花都站 或 花都站2号站台">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">遗失日期</label>
+                            <input class="form-input" id="lostReportDate" type="date" value="">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">联系人 *</label>
+                            <input class="form-input" id="lostReportContact" placeholder="请输入您的姓名">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">联系电话 *</label>
+                            <input class="form-input" id="lostReportPhone" type="tel" placeholder="请输入您的手机号码">
+                        </div>
+                        <button class="btn-primary" onclick="submitLostReport()" style="width:100%;">提交失物登记</button>
+                    </div>
+                </div>
+                
+                <div class="service-notice" style="margin:16px 0;">
+                    <div class="notice-title"><span data-icon="info" style="display:inline-block;vertical-align:-2px;margin-right:6px;"></span>温馨提示</div>
+                    <div class="notice-text">如在车站或列车上遗失物品，请尽快联系车站工作人员或拨打服务热线 020-96891。</div>
+                </div>
+                <div class="lost-official-link" onclick="window.open('http://dzs.gzmtr.cn:9027/lost/lost_intercity.php','_blank')">
+                    <span data-icon="external" style="display:inline-block;vertical-align:-2px;margin-right:8px;"></span>
+                    <span>查看官方失物招领系统</span>
+                    <span data-icon="chevronRight" style="margin-left:auto;display:inline-block;vertical-align:-2px;"></span>
+                </div>
+            </div>
+
+            <!-- ========== TICKET DETAIL MODAL (inline) ========== -->
+            <div class="page" id="page-ticket-detail">
+                <div id="ticketDetailContent"></div>
+            </div>
+
+            <!-- ========== STATION PICKER MODAL ========== -->
+            <div class="page" id="page-station-picker">
+                <div class="station-search-bar">
+                    <input class="form-input" id="stationSearch" placeholder="搜索站点..." oninput="filterStations()">
+                </div>
+                <div class="station-picker-body" id="stationPickerBody">
+                    <div class="station-lines" id="stationLines"></div>
+                    <div class="station-stations" id="stationStations"></div>
+                </div>
+            </div>
+
+            <!-- ========== FACILITIES PAGE (车站设施) ========== -->
+            <div class="page facilities-page" id="page-facilities">
+                <div class="result-tabs" id="facilityTabs" style="margin:12px 16px 0;flex-shrink:0;">
+                    <div class="result-tab active" id="tabFacilityWC" onclick="switchFacilityTab('wc')">卫生间</div>
+                    <div class="result-tab" id="tabFacilityBaby" onclick="switchFacilityTab('baby')">母婴室</div>
+                    <div class="result-tab" id="tabFacilityBM" onclick="switchFacilityTab('bm')">便民举措</div>
+                </div>
+                <div class="facility-iframe-wrapper" id="facilityIframeWrapper">
+                    <div class="facility-iframe-container" id="facilityIframeContainer">
+                        <div class="loading-state" id="facilityLoading" style="padding:40px 24px;">
+                            <div class="loading-spinner" style="margin:0 auto 12px;"></div>
+                            <div class="loading-text">加载中...</div>
+                        </div>
+                        <iframe id="facilityIframe" class="facility-iframe" style="display:none;" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== FACILITY CONTENT PAGE (设施详情内嵌页) ========== -->
+            <div class="page" id="page-facility-content">
+                <div class="facility-embed" id="facilityEmbed">
+                    <div class="loading-state" style="padding:60px 24px;">
+                        <div class="loading-spinner" style="margin:0 auto 12px;"></div>
+                        <div class="loading-text">加载中...</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="app-nav" id="appNav">
+            <div class="nav-item active" data-page="home" onclick="navigateTo('home')">
+                <span class="nav-icon" data-icon="home"></span>
+                <span class="nav-label">首页</span>
+            </div>
+            <div class="nav-item" data-page="travel" onclick="navigateTo('travel')">
+                <span class="nav-icon" data-icon="train"></span>
+                <span class="nav-label">出行</span>
+            </div>
+            <div class="nav-item" data-page="ticket" onclick="navigateTo('ticket')">
+                <span class="nav-icon" data-icon="ticket"></span>
+                <span class="nav-label">购票</span>
+            </div>
+            <div class="nav-item" data-page="service" onclick="navigateTo('service')">
+                <span class="nav-icon" data-icon="phone"></span>
+                <span class="nav-label">服务</span>
+            </div>
+        </nav>
+
+        <!-- Toast -->
+        <div class="toast" id="toast"></div>
+    </div>
+
+    <script src="js/icons.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,1457 @@
+/* ============================================
+   广东城际官方APP - 响应式网站
+   仿官方蓝白风格
+   ============================================ */
+
+/* CSS Variables */
+:root {
+    --primary: #003DA5;
+    --primary-light: #0055CC;
+    --primary-dark: #002B7A;
+    --secondary: #0098D4;
+    --accent: #E60012;
+    --accent-light: #FF4444;
+    --bg: #F0F2F5;
+    --bg-white: #FFFFFF;
+    --text-primary: #1A1A1A;
+    --text-secondary: #666666;
+    --text-light: #999999;
+    --border: #E5E5E5;
+    --shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.05);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --radius-lg: 16px;
+    --nav-height: 60px;
+    --header-height: 56px;
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --transition: all 0.3s ease;
+}
+
+/* Reset & Base */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', 'Microsoft YaHei', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.5;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+ul, ol {
+    list-style: none;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* ============================================
+   App Shell
+   ============================================ */
+.app-shell {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    max-width: 480px;
+    margin: 0 auto;
+    background: var(--bg-white);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Desktop: center the app with max-width */
+@media (min-width: 768px) {
+    body {
+        background: #E8ECF0;
+    }
+    .app-shell {
+        height: 100vh;
+        border-radius: 0;
+    }
+}
+
+@media (min-width: 1024px) {
+    .app-shell {
+        max-width: 420px;
+        margin: 0 auto;
+        border-radius: 0;
+        border-left: 1px solid var(--border);
+        border-right: 1px solid var(--border);
+    }
+}
+
+/* ============================================
+   Header
+   ============================================ */
+.app-header {
+    height: var(--header-height);
+    background: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+    position: relative;
+    flex-shrink: 0;
+    z-index: 100;
+}
+
+.app-header h1 {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.app-header .back-btn {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: white;
+    font-size: 22px;
+    cursor: pointer;
+    display: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: var(--transition);
+}
+
+.app-header .back-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.app-header .back-btn.visible {
+    display: block;
+}
+
+/* ============================================
+   Main Content Area
+   ============================================ */
+.app-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    background: var(--bg);
+    position: relative;
+}
+
+.app-content::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
+
+/* Page Container */
+.page {
+    display: none;
+    animation: fadeIn 0.3s ease;
+    min-height: 100%;
+    padding-bottom: 16px;
+}
+
+.page.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================
+   Bottom Tab Navigation
+   ============================================ */
+.app-nav {
+    height: calc(var(--nav-height) + var(--safe-bottom));
+    padding-bottom: var(--safe-bottom);
+    background: var(--bg-white);
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-shrink: 0;
+    z-index: 100;
+}
+
+.nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    cursor: pointer;
+    color: var(--text-light);
+    transition: var(--transition);
+    position: relative;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.nav-item .nav-icon {
+    font-size: 24px;
+    line-height: 1;
+    transition: var(--transition);
+}
+
+.nav-item .nav-label {
+    font-size: 10px;
+    line-height: 1.2;
+    transition: var(--transition);
+}
+
+.nav-item.active {
+    color: var(--primary);
+}
+
+.nav-item.active .nav-icon {
+    transform: scale(1.05);
+}
+
+.nav-item:hover {
+    color: var(--primary);
+}
+
+/* ============================================
+   Home Page - Grid Navigation
+   ============================================ */
+.home-banner {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    padding: 32px 24px 28px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.home-banner::after {
+    content: '';
+    position: absolute;
+    right: -20px;
+    top: -20px;
+    width: 120px;
+    height: 120px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 50%;
+}
+
+.home-banner::before {
+    content: '';
+    position: absolute;
+    right: 40px;
+    bottom: -30px;
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+}
+
+.banner-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    position: relative;
+    z-index: 1;
+}
+
+.banner-subtitle {
+    font-size: 13px;
+    opacity: 0.85;
+    position: relative;
+    z-index: 1;
+}
+
+.banner-time {
+    font-size: 12px;
+    opacity: 0.7;
+    margin-top: 12px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Quick Actions */
+.quick-actions {
+    display: flex;
+    gap: 0;
+    background: var(--bg-white);
+    margin: -20px 16px 0;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    position: relative;
+    z-index: 2;
+    overflow: hidden;
+}
+
+.quick-action {
+    flex: 1;
+    padding: 16px 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.quick-action:hover {
+    background: #F0F5FF;
+}
+
+.quick-action .qa-icon {
+    font-size: 28px;
+    margin-bottom: 6px;
+}
+
+.quick-action .qa-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* Function Grid */
+.func-grid-section {
+    padding: 20px 16px 8px;
+}
+
+.func-grid-section .section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 14px;
+    padding-left: 4px;
+}
+
+.func-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.func-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 8px;
+    background: var(--bg-white);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: var(--transition);
+    min-height: 90px;
+    justify-content: center;
+}
+
+.func-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+.func-item:active {
+    transform: scale(0.95);
+}
+
+.func-item .func-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    margin-bottom: 8px;
+}
+
+.func-item .func-label {
+    font-size: 12px;
+    color: var(--text-primary);
+    text-align: center;
+    line-height: 1.3;
+}
+
+/* Icon colors */
+.icon-blue { background: #E8F0FE; color: #1A73E8; }
+.icon-green { background: #E6F7E6; color: #2E7D32; }
+.icon-orange { background: #FFF3E0; color: #E65100; }
+.icon-red { background: #FFEBEE; color: #C62828; }
+.icon-purple { background: #F3E5F5; color: #6A1B9A; }
+.icon-teal { background: #E0F2F1; color: #00695C; }
+.icon-cyan { background: #E0F7FA; color: #00838F; }
+.icon-pink { background: #FCE4EC; color: #AD1457; }
+
+/* Service Notice */
+.service-notice {
+    margin: 16px;
+    padding: 14px 16px;
+    background: var(--bg-white);
+    border-radius: var(--radius);
+    border-left: 4px solid var(--secondary);
+    box-shadow: var(--shadow-sm);
+}
+
+.service-notice .notice-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 6px;
+}
+
+.service-notice .notice-text {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+/* ============================================
+   Travel Assistant Page (出行助手)
+   ============================================ */
+.travel-page {
+    background: var(--bg);
+}
+
+.travel-form {
+    background: var(--bg-white);
+    margin: 16px;
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow-sm);
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group:last-child {
+    margin-bottom: 0;
+}
+
+.form-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+}
+
+.form-input {
+    width: 100%;
+    height: 44px;
+    padding: 0 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 15px;
+    color: var(--text-primary);
+    background: var(--bg-white);
+    outline: none;
+    transition: var(--transition);
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.form-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(0, 61, 165, 0.1);
+}
+
+.form-input::placeholder {
+    color: var(--text-light);
+}
+
+.form-row {
+    display: flex;
+    gap: 12px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+.form-swap {
+    display: flex;
+    justify-content: center;
+    margin: -8px 0 4px;
+}
+
+.swap-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px dashed var(--border);
+    background: var(--bg-white);
+    cursor: pointer;
+    font-size: 18px;
+    color: var(--secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.swap-btn:hover {
+    background: #E8F4FD;
+    border-color: var(--secondary);
+}
+
+.btn-primary {
+    width: 100%;
+    height: 46px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-primary:hover {
+    background: var(--primary-light);
+}
+
+.btn-primary:active {
+    transform: scale(0.98);
+}
+
+/* Travel Results */
+.travel-results {
+    margin: 0 16px;
+}
+
+/* 结果视图切换Tab */
+.result-tabs {
+    display: flex;
+    background: #EEF2F7;
+    border-radius: var(--radius);
+    padding: 3px;
+    margin: 12px 0;
+}
+
+.result-tab {
+    flex: 1;
+    text-align: center;
+    padding: 8px 0;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: var(--transition);
+    -webkit-tap-highlight-color: transparent;
+}
+
+.result-tab.active {
+    background: var(--bg-white);
+    color: var(--primary);
+    font-weight: 600;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.result-card {
+    background: var(--bg-white);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow-sm);
+    animation: slideUp 0.3s ease;
+}
+
+.result-card .train-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.result-card .train-number {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.result-card .train-type {
+    font-size: 11px;
+    padding: 2px 10px;
+    border-radius: 10px;
+    background: #E8F0FE;
+    color: var(--primary);
+}
+
+.result-card .time-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.result-card .time-station {
+    text-align: center;
+}
+
+.result-card .time-station .time {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.result-card .time-station .station {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+}
+
+.result-card .time-duration {
+    flex: 1;
+    text-align: center;
+    padding: 0 20px;
+    position: relative;
+}
+
+.result-card .time-duration .duration {
+    font-size: 12px;
+    color: var(--text-light);
+    background: var(--bg);
+    padding: 2px 10px;
+    border-radius: 8px;
+    position: relative;
+    z-index: 1;
+}
+
+.result-card .time-duration::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--border);
+    transform: translateY(-50%);
+}
+
+.result-card .time-duration .train-line {
+    display: block;
+    width: 8px;
+    height: 8px;
+    background: var(--secondary);
+    border-radius: 50%;
+    margin: 6px auto 0;
+    position: relative;
+    z-index: 1;
+}
+
+.result-card .extra-info {
+    display: flex;
+    gap: 16px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--text-light);
+}
+
+.result-card .extra-info span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* ============================================
+   Route Map Page (线路图)
+   ============================================ */
+.route-map-container {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.route-map-container img {
+    width: 100%;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    cursor: zoom-in;
+}
+
+.route-map-container .map-tip {
+    font-size: 12px;
+    color: var(--text-light);
+    margin-top: 12px;
+    text-align: center;
+}
+
+/* ============================================
+   Schedule Page (时刻表)
+   ============================================ */
+.schedule-table-wrap {
+    overflow-x: auto;
+    margin: 16px;
+    background: var(--bg-white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+}
+
+.schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    min-width: 600px;
+}
+
+.schedule-table thead {
+    background: var(--primary);
+    color: white;
+}
+
+.schedule-table th {
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 500;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.schedule-table td {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+}
+
+.schedule-table tbody tr:hover {
+    background: #F8FAFE;
+}
+
+.schedule-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ============================================
+   Ticket Info Page (票务服务)
+   ============================================ */
+.ticket-page {
+    padding: 16px;
+}
+
+.ticket-card {
+    background: var(--bg-white);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.ticket-card:hover {
+    box-shadow: var(--shadow);
+    transform: translateY(-1px);
+}
+
+.ticket-card .ticket-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ticket-card .ticket-title svg {
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
+}
+
+.ticket-card .ticket-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.ticket-card .ticket-arrow {
+    color: var(--text-light);
+    font-size: 14px;
+    margin-left: auto;
+}
+
+.ticket-card-action {
+    border: 1px solid #E8F0FE;
+    background: linear-gradient(135deg, #FAFBFF 0%, #F0F5FF 100%);
+}
+
+.ticket-card-action:hover {
+    border-color: #D6E4FF;
+}
+
+/* 12306 蓝色徽章 */
+.badge-12306 {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 10px;
+    background: #003DA5;
+    color: white;
+    margin-left: 8px;
+}
+
+/* 城际乘车码 红色徽章 */
+.badge-qrcode {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 10px;
+    background: #C62828;
+    color: white;
+    margin-left: 8px;
+}
+
+/* ============================================
+   Service Center Page (客服中心)
+   ============================================ */
+.service-form {
+    background: var(--bg-white);
+    margin: 16px;
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow-sm);
+}
+
+.service-form .form-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+}
+
+.form-textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    color: var(--text-primary);
+    outline: none;
+    resize: vertical;
+    font-family: inherit;
+    transition: var(--transition);
+}
+
+.form-textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(0, 61, 165, 0.1);
+}
+
+.form-textarea::placeholder {
+    color: var(--text-light);
+}
+
+.form-select {
+    width: 100%;
+    height: 44px;
+    padding: 0 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 15px;
+    color: var(--text-primary);
+    background: var(--bg-white);
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 36px;
+    transition: var(--transition);
+}
+
+.form-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(0, 61, 165, 0.1);
+}
+
+/* ============================================
+   Lost & Found Page (失物招领)
+   ============================================ */
+.lost-page {
+    padding: 16px;
+}
+
+.lost-search {
+    background: var(--bg-white);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-sm);
+}
+
+.lost-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.lost-item {
+    background: var(--bg-white);
+    border-radius: var(--radius);
+    padding: 16px;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    transition: var(--transition);
+}
+
+.lost-item:hover {
+    box-shadow: var(--shadow);
+}
+
+.lost-item .lost-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    background: #FFF3E0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 600;
+    color: #E65100;
+    flex-shrink: 0;
+}
+
+.lost-item .lost-info {
+    flex: 1;
+}
+
+.lost-item .lost-name {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.lost-item .lost-detail {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.lost-item .lost-status {
+    font-size: 11px;
+    padding: 2px 10px;
+    border-radius: 10px;
+    display: inline-block;
+    margin-top: 6px;
+}
+
+.status-pending {
+    background: #FFF3E0;
+    color: #E65100;
+}
+
+.status-found {
+    background: #E8F5E9;
+    color: #2E7D32;
+}
+
+.status-claimed {
+    background: #E8F0FE;
+    color: #1A73E8;
+}
+
+/* ============================================
+   Info Page (旅客须知)
+   ============================================ */
+.info-page {
+    padding: 16px;
+}
+
+.info-section {
+    background: var(--bg-white);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+.info-section-header {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: var(--transition);
+}
+
+.info-section-header:hover {
+    background: #F8FAFE;
+}
+
+.info-section-header .info-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.info-section-header .info-arrow {
+    font-size: 12px;
+    color: var(--text-light);
+    transition: transform 0.3s ease;
+}
+
+.info-section-header.active .info-arrow {
+    transform: rotate(180deg);
+}
+
+.info-section-body {
+    padding: 0 20px 16px;
+    display: none;
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.8;
+}
+
+.info-section-body.show {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+.info-section-body p {
+    margin-bottom: 10px;
+}
+
+.info-section-body ul {
+    padding-left: 20px;
+    margin-bottom: 10px;
+}
+
+.info-section-body ul li {
+    list-style: disc;
+    margin-bottom: 4px;
+}
+
+/* ============================================
+   Loading & Toast
+   ============================================ */
+.loading-spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid var(--border);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.toast {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    background: rgba(0, 0, 0, 0.75);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    max-width: 80%;
+    text-align: center;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* ============================================
+   Loading State
+   ============================================ */
+.loading-state {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--text-light);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.loading-text {
+    font-size: 14px;
+}
+
+/* ============================================
+   Empty State
+   ============================================ */
+.empty-state {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--text-light);
+}
+
+.empty-state .empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.empty-state .empty-text {
+    font-size: 14px;
+}
+
+/* ============================================
+   Responsive Adjustments
+   ============================================ */
+@media (min-width: 768px) {
+    .func-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 374px) {
+    .func-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+    .func-item {
+        padding: 12px 6px;
+        min-height: 80px;
+    }
+    .func-item .func-icon {
+        width: 38px;
+        height: 38px;
+        font-size: 18px;
+    }
+    .func-item .func-label {
+        font-size: 11px;
+    }
+    .quick-actions {
+        margin: -20px 12px 0;
+    }
+    .home-banner {
+        padding: 24px 16px 24px;
+    }
+}
+
+/* ============================================
+   SVG Icon Sizing
+   ============================================ */
+.nav-icon svg { width: 24px; height: 24px; }
+.qa-icon svg { width: 28px; height: 28px; margin-bottom: 0; }
+.func-icon svg { width: 24px; height: 24px; }
+.swap-btn svg { width: 18px; height: 18px; }
+.ticket-arrow svg { width: 18px; height: 18px; }
+.info-arrow svg { width: 14px; height: 14px; }
+.info-title svg { width: 20px; height: 20px; flex-shrink: 0; }
+.notice-title svg { width: 16px; height: 16px; }
+.btn-primary svg { width: 18px; height: 18px; flex-shrink: 0; }
+.empty-icon svg { width: 48px; height: 48px; opacity: 0.5; }
+.back-btn svg { width: 22px; height: 22px; }
+.extra-info svg { width: 14px; height: 14px; vertical-align: -2px; }
+
+/* 失物登记折叠卡片 */
+.lost-register {
+    margin: 0 16px 12px;
+    background: var(--bg-white);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.lost-register-toggle {
+    display: flex;
+    align-items: center;
+    padding: 13px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.lost-register-arrow {
+    margin-left: auto;
+    color: var(--text-light);
+    font-size: 12px;
+    transition: transform 0.25s ease;
+}
+
+.lost-register.open .lost-register-arrow {
+    transform: rotate(180deg);
+}
+
+.lost-register-form {
+    display: none;
+    padding: 4px 16px 16px;
+}
+
+.lost-register.open .lost-register-form {
+    display: block;
+}
+
+.lost-register-form .form-group {
+    margin-bottom: 12px;
+}
+
+/* ============================================
+   Station Picker (左侧线路/右侧站点 双列联动)
+   ============================================ */
+#page-station-picker {
+    height: 100%;
+    display: none;
+    flex-direction: column;
+}
+
+#page-station-picker.active {
+    display: flex;
+}
+
+.station-search-bar {
+    padding: 12px 16px;
+    flex-shrink: 0;
+}
+
+.station-picker-body {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    min-height: 0;
+}
+
+.station-lines {
+    width: 104px;
+    background: #F5F7FA;
+    overflow-y: auto;
+    flex-shrink: 0;
+    -webkit-overflow-scrolling: touch;
+}
+
+.station-lines::-webkit-scrollbar {
+    width: 0;
+}
+
+.line-item {
+    padding: 15px 10px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-left: 3px solid transparent;
+    transition: all 0.2s ease;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    line-height: 1.4;
+}
+
+.line-item:hover {
+    color: var(--primary);
+}
+
+.line-item.active {
+    background: var(--bg-white);
+    color: var(--primary);
+    font-weight: 600;
+    border-left-color: var(--primary);
+}
+
+.line-item .line-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.station-stations {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+    background: var(--bg-white);
+    -webkit-overflow-scrolling: touch;
+}
+
+.station-stations::-webkit-scrollbar {
+    width: 0;
+}
+
+.station-stations .station-group-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    padding: 6px 4px 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.station-stations .station-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 12px;
+    margin-bottom: 2px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 14px;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.station-stations .station-item:hover {
+    background: #F0F5FF;
+}
+
+.station-stations .station-item:active {
+    background: #E3EEFF;
+}
+
+.station-item-icon {
+    color: var(--secondary);
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.station-item-icon svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* 搜索模式下隐藏左侧线路栏 */
+.station-picker-body.searching .station-lines {
+    display: none;
+}
+
+/* ============================================
+   Scrollbar Styles
+   ============================================ */
+.app-content::-webkit-scrollbar {
+    width: 0;
+}
+
+/* ============================================
+   Facilities Page (车站设施)
+   注意：必须限定为 .page.active.facilities-page 才应用 flex，
+   否则 .facilities-page 的 display:flex 会覆盖 .page 的 display:none
+   （同优先级后定义者胜），导致车站设施页永远可见。
+   ============================================ */
+.facilities-page {
+    height: 100%;
+    overflow: hidden;
+}
+
+.page.active.facilities-page {
+    display: flex;
+    flex-direction: column;
+}
+
+.facility-iframe-wrapper {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+.facility-iframe-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.facility-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+}
+
+#facilityLoading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-page);
+    z-index: 10;
+}
+
+/* 官方失物招领链接 */
+.lost-official-link {
+    margin: 0 16px 16px;
+    padding: 14px 16px;
+    background: linear-gradient(135deg, #FAFBFF 0%, #F0F5FF 100%);
+    border-radius: var(--radius);
+    border: 1px solid #E8F0FE;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.lost-official-link:hover {
+    border-color: #D6E4FF;
+    box-shadow: var(--shadow);
+}
+
+.lost-official-link svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+/* ============================================
+   Print Styles
+   ============================================ */
+@media print {
+    .app-nav, .app-header {
+        display: none;
+    }
+    .app-shell {
+        max-width: 100%;
+        box-shadow: none;
+    }
+    .page {
+        display: block !important;
+    }
+}
