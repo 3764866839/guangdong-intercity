@@ -1,0 +1,14 @@
+{
+  "name": "guangdong-intercity",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "description": "广东城际出行助手：移动端 Web 应用 + 零依赖 Node.js 官方接口代理",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

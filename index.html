@@ -17,6 +17,12 @@
             <h1 id="pageTitle">广东城际</h1>
         </header>
 
+        <!-- 环境提示条（file:// 打开或无后端服务时显示） -->
+        <div class="env-warning" id="envWarning" style="display:none;">
+            <span data-icon="alert" class="env-warning-icon"></span>
+            <span class="env-warning-text"></span>
+        </div>
+
         <!-- Main Content -->
         <main class="app-content" id="appContent">
 
@@ -80,7 +86,7 @@
                 <div class="service-notice">
                     <div class="notice-title"><span data-icon="info" style="display:inline-block;vertical-align:-2px;margin-right:6px;"></span>运营公告</div>
                     <div class="notice-text" id="noticeText">
-                        穗深城际铁路（竹料至新塘南）定于2026年7月31日12时开通运营。请以中国铁路12306官方售票系统实际查询结果为准。
+                        穗深城际铁路（竹料至新塘南）已于2026年7月31日开通运营，全线贯通广州、东莞、深圳三市。请以中国铁路12306官方售票系统实际查询结果为准。
                     </div>
                 </div>
             </div>
@@ -102,8 +108,8 @@
                     <div class="form-group">
                         <label class="form-label">乘坐日期</label>
                         <div style="display:flex;align-items:center;gap:8px;">
-                            <input class="form-input" id="travelDate" type="date" onchange="updateDateInfo()" style="flex:0 0 auto;">
-                            <span id="dateInfo" style="font-size:13px;color:var(--text-light);white-space:nowrap;"></span>
+                            <input class="form-input" id="travelDate" type="date" onchange="updateDateInfo()" style="flex:0 0 auto;width:auto;">
+                            <span id="dateInfo" style="font-size:13px;color:var(--text-light);white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis;"></span>
                         </div>
                     </div>
                     <div style="display:flex;gap:10px;margin-top:8px;">
@@ -116,7 +122,7 @@
                         <div class="result-tab" id="tabAll" onclick="switchTrainView('all')">全部时刻</div>
                     </div>
                     <div class="service-notice" style="margin:0 0 12px;">
-                        <div class="notice-text" style="font-size:12px;">1. 车次、时刻表信息为实时数据，仅供参考，请以实际情况为准<br>2. 请选择出发站和到达站后点击查询</div>
+                        <div class="notice-text" style="font-size:12px;">1. 车次、时刻表信息为官方实时数据，仅供参考，请以实际情况为准<br>2. 支持城际各站及地铁换乘站（如科韵路、汉溪长隆、广州南站），无直达车次时自动展示官方智能换乘方案<br>3. 请选择出发站和到达站后点击查询</div>
                     </div>
                     <div id="travelResults"></div>
                 </div>
@@ -227,7 +233,7 @@
                 </div>
                 <div class="service-notice" style="margin:0 16px 16px;">
                     <div class="notice-title"><span data-icon="phone" style="display:inline-block;vertical-align:-2px;margin-right:6px;"></span>服务热线</div>
-                    <div class="notice-text">服务热线：<a href="tel:02096891" style="color:var(--primary);font-weight:600;text-decoration:underline;">020-96891</a><br>营业时间：06:00 - 23:00</div>
+                    <div class="notice-text">服务热线：<a href="tel:02096891" class="service-hotline">020-96891</a><br>营业时间：06:00 - 23:00</div>
                 </div>
                 </div>
 
@@ -341,12 +347,6 @@
                         <button class="btn-primary" onclick="searchLost()" style="width:auto;padding:0 24px;height:44px;flex-shrink:0;">查询</button>
                     </div>
                 </div>
-                <div class="lost-list" id="lostList">
-                    <div class="empty-state">
-                        <div class="empty-icon" data-icon="search"></div>
-                        <div class="empty-text">输入关键词查询遗失物品</div>
-                    </div>
-                </div>
                 <div class="lost-register">
                     <div class="lost-register-toggle" onclick="toggleLostRegister()">
                         <span data-icon="edit" style="display:inline-block;vertical-align:-2px;margin-right:6px;color:var(--primary);"></span>
@@ -392,6 +392,12 @@
                         <button class="btn-primary" onclick="submitLostReport()" style="width:100%;">提交失物登记</button>
                     </div>
                 </div>
+                <div class="lost-list" id="lostList">
+                    <div class="empty-state">
+                        <div class="empty-icon" data-icon="search"></div>
+                        <div class="empty-text">输入关键词查询遗失物品</div>
+                    </div>
+                </div>
                 
                 <div class="service-notice" style="margin:16px 0;">
                     <div class="notice-title"><span data-icon="info" style="display:inline-block;vertical-align:-2px;margin-right:6px;"></span>温馨提示</div>
@@ -427,14 +433,9 @@
                     <div class="result-tab" id="tabFacilityBaby" onclick="switchFacilityTab('baby')">母婴室</div>
                     <div class="result-tab" id="tabFacilityBM" onclick="switchFacilityTab('bm')">便民举措</div>
                 </div>
-                <div class="facility-iframe-wrapper" id="facilityIframeWrapper">
-                    <div class="facility-iframe-container" id="facilityIframeContainer">
-                        <div class="loading-state" id="facilityLoading" style="padding:40px 24px;">
-                            <div class="loading-spinner" style="margin:0 auto 12px;"></div>
-                            <div class="loading-text">加载中...</div>
-                        </div>
-                        <iframe id="facilityIframe" class="facility-iframe" style="display:none;" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
-                    </div>
+                <div class="facility-body">
+                    <div class="facility-lines" id="facilityLines"></div>
+                    <div class="facility-stations" id="facilityList"></div>
                 </div>
             </div>
 
@@ -474,6 +475,7 @@
     </div>
 
     <script src="js/icons.js"></script>
+    <script src="js/station-data.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

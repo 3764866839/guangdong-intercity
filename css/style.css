@@ -15,7 +15,9 @@
     --bg-white: #FFFFFF;
     --text-primary: #1A1A1A;
     --text-secondary: #666666;
-    --text-light: #999999;
+    /* 2026-08 无障碍调整：#999 在白底仅 2.85:1，不满足 WCAG AA（≥4.5），
+       且站厅位置、时刻、表头等关键信息均使用该 token —— 统一加深到 4.83:1 */
+    --text-light: #6B7280;
     --border: #E5E5E5;
     --shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
     --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.05);
@@ -144,6 +146,32 @@ img {
 
 .app-header .back-btn.visible {
     display: block;
+}
+
+/* 环境提示条（file:// 打开或无后端服务时提示） */
+.env-warning {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: #FFF8E1;
+    color: #8D6E00;
+    font-size: 12px;
+    line-height: 1.5;
+    border-bottom: 1px solid #FFE082;
+    flex-shrink: 0;
+    z-index: 99;
+}
+
+.env-warning .env-warning-icon {
+    flex-shrink: 0;
+    color: #F9A825;
+    display: flex;
+}
+
+.env-warning svg {
+    width: 16px;
+    height: 16px;
 }
 
 /* ============================================
@@ -471,6 +499,15 @@ img {
     box-shadow: 0 0 0 3px rgba(0, 61, 165, 0.1);
 }
 
+/* 日期输入：width:100% 会让它在 flex 行里吃掉整行宽度，把「星期」文本挤出屏幕 */
+.form-input[type="date"],
+.form-input[type="datetime-local"] {
+    width: auto;
+    min-width: 150px;
+    max-width: 62%;
+    flex: 0 0 auto;
+}
+
 .form-input::placeholder {
     color: var(--text-light);
 }
@@ -491,8 +528,8 @@ img {
 }
 
 .swap-btn {
-    width: 36px;
-    height: 36px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     border: 1px dashed var(--border);
     background: var(--bg-white);
@@ -503,6 +540,7 @@ img {
     align-items: center;
     justify-content: center;
     transition: var(--transition);
+    -webkit-tap-highlight-color: transparent;
 }
 
 .swap-btn:hover {
@@ -552,7 +590,8 @@ img {
 .result-tab {
     flex: 1;
     text-align: center;
-    padding: 8px 0;
+    /* 触控目标：12px 时仅 42px 高，提到 14px 满足 44px */
+    padding: 14px 0;
     font-size: 13px;
     font-weight: 500;
     color: var(--text-secondary);
@@ -821,9 +860,24 @@ img {
     font-weight: 500;
     padding: 3px 10px;
     border-radius: 10px;
-    background: #C62828;
+    background: #A71D1D;
     color: white;
     margin-left: 8px;
+}
+
+/* 服务热线链接：加大触控区 */
+.service-hotline {
+    display: inline-block;
+    padding: 8px 10px;
+    margin: -8px 0 -8px -6px;
+    color: var(--primary);
+    font-weight: 600;
+    text-decoration: underline;
+    -webkit-tap-highlight-color: transparent;
+    border-radius: 6px;
+}
+.service-hotline:active {
+    background: #E8F4FD;
 }
 
 /* ============================================
@@ -1251,7 +1305,7 @@ img {
 }
 
 .station-lines {
-    width: 104px;
+    width: 118px;
     background: #F5F7FA;
     overflow-y: auto;
     flex-shrink: 0;
@@ -1262,14 +1316,28 @@ img {
     width: 0;
 }
 
+.line-section-label {
+    padding: 10px 10px 6px;
+    font-size: 10px;
+    /* 原 #8A8A8A 在此灰底上仅 3.02:1，加深至 4.6:1 */
+    color: #5F6875;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    background: #EDF0F4;
+    border-bottom: 1px solid #E3E7EC;
+    user-select: none;
+    line-height: 1.4;
+}
+
 .line-item {
-    padding: 15px 10px;
+    padding: 14px 8px;
     font-size: 13px;
     color: var(--text-secondary);
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
+    white-space: nowrap;
     border-left: 3px solid transparent;
     transition: all 0.2s ease;
     user-select: none;
@@ -1315,6 +1383,109 @@ img {
     display: flex;
     align-items: center;
     gap: 6px;
+}
+
+/* 地铁站点视图：字母导航条（吸顶） */
+.station-letter-nav {
+    position: sticky;
+    top: -12px;
+    z-index: 5;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px 2px 10px;
+    background: var(--bg-white);
+    margin: 0 -4px 4px;
+}
+
+.station-letter-nav .letter-btn {
+    min-width: 26px;
+    text-align: center;
+    padding: 3px 0;
+    font-size: 12px;
+    font-weight: 600;
+    color: #1677ff;
+    background: #E8F1FF;
+    border-radius: 6px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.station-letter-nav .letter-btn:active {
+    background: #1677ff;
+    color: #fff;
+}
+
+/* 地铁站点视图：模式切换（按线路/按拼音） */
+.metro-mode-toggle {
+    display: flex;
+    gap: 8px;
+    padding: 2px 4px 8px;
+}
+
+.metro-mode-btn {
+    flex: 1;
+    text-align: center;
+    padding: 6px 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: #666;
+    background: var(--bg-white);
+    border: 1px solid var(--border-color, #E5E7EB);
+    border-radius: 8px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.metro-mode-btn.active {
+    color: #fff;
+    background: #1677ff;
+    border-color: #1677ff;
+}
+
+/* 地铁站点视图：线路筛选条（吸顶，横向滚动） */
+.station-line-nav {
+    position: sticky;
+    top: -12px;
+    z-index: 5;
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding: 8px 2px 10px;
+    background: var(--bg-white);
+    margin: 0 -4px 4px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.station-line-nav::-webkit-scrollbar {
+    display: none;
+}
+
+.station-line-nav .line-chip {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 9px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #333;
+    background: var(--bg-white);
+    border: 1px solid var(--border-color, #E5E7EB);
+    border-radius: 14px;
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.station-line-nav .line-chip.active {
+    background: #E8F1FF;
+    border-color: #1677ff;
+    color: #1677ff;
 }
 
 .station-stations .station-item {
@@ -1378,39 +1549,241 @@ img {
     flex-direction: column;
 }
 
-.facility-iframe-wrapper {
+.facility-body {
     flex: 1;
+    display: flex;
+    min-height: 0;
+}
+
+/* 左侧线路栏（同站点选择器风格） */
+.facility-lines {
+    width: 118px;
+    background: #F5F7FA;
+    overflow-y: auto;
+    flex-shrink: 0;
+    -webkit-overflow-scrolling: touch;
+}
+
+.facility-lines::-webkit-scrollbar {
+    width: 0;
+}
+
+.facility-lines .line-section-label {
+    padding: 10px 10px 6px;
+    font-size: 10px;
+    /* 原 #8A8A8A 在此灰底上仅 3.02:1，加深至 4.6:1 */
+    color: #5F6875;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    background: #EDF0F4;
+    border-bottom: 1px solid #E3E7EC;
+    user-select: none;
+    line-height: 1.4;
+}
+
+.facility-lines .line-item {
+    padding: 14px 8px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+    border-left: 3px solid transparent;
+    transition: all 0.2s ease;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    line-height: 1.4;
+}
+
+.facility-lines .line-item span:last-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+}
+
+.facility-lines .line-item.active {
+    background: var(--bg-white);
+    color: var(--primary);
+    font-weight: 600;
+    border-left-color: var(--primary);
+}
+
+.facility-lines .line-item .line-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* 右侧设施列表 */
+.facility-stations {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px 12px 20px;
+    background: var(--bg-white);
+    -webkit-overflow-scrolling: touch;
+    min-width: 0;
+}
+
+.facility-stations::-webkit-scrollbar {
+    width: 0;
+}
+
+.facility-header {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-light);
+    padding: 2px 4px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.facility-all-btn {
+    color: var(--primary);
+    font-weight: 500;
+    font-size: 12px;
+    cursor: pointer;
+    /* 触控目标：原 4px/26px 高，偏小；提升到 44px 高（移动端建议值） */
+    padding: 0 12px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    border-radius: 12px;
+    background: #E8F4FD;
+    flex-shrink: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.facility-line-group {
+    margin-bottom: 4px;
+}
+
+/* 线路分组标题：带色底的分组卡头 */
+.facility-line-group .station-group-title {
+    background: var(--bg-white);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    margin: 0 0 8px;
+    box-shadow: var(--shadow-sm);
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* 设施卡片：官方观感 —— 左侧线路色竖条 + 圆角白卡 */
+.facility-item {
+    background: var(--bg-white);
+    border-radius: var(--radius-sm);
+    padding: 14px 14px 14px 18px;
+    margin-bottom: 10px;
+    box-shadow: var(--shadow-sm);
+    /* 左侧色条 = 该设施所属线路色，由 JS 按当前线路写入 --facility-line-color */
+    border-left: 3px solid var(--facility-line-color, #003DA5);
     position: relative;
     overflow: hidden;
+    /* 屏外卡片跳过渲染，长列表滚动更流畅 */
+    content-visibility: auto;
+    contain-intrinsic-size: auto 90px;
 }
 
-.facility-iframe-container {
+/* 站名前的线路色点：右栏自带归属提示，无需回看左栏 */
+.facility-item-station::before {
+    content: '';
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    margin-right: 7px;
+    vertical-align: 1px;
+    background: var(--facility-line-color, #003DA5);
+}
+
+.facility-item::before {
+    content: '';
     position: absolute;
-    top: 0;
     left: 0;
-    right: 0;
+    top: 0;
     bottom: 0;
+    width: 4px;
+    background: #003DA5;
+    opacity: 0.85;
 }
 
-.facility-iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-    display: block;
-}
-
-#facilityLoading {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+.facility-item-main {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    background: var(--bg-page);
-    z-index: 10;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+/* 站名（核心信息）：大字号主位，左侧 */
+.facility-item-station {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    background: rgba(0, 61, 165, 0.08);
+    border-radius: 20px;
+    padding: 5px 14px;
+    flex-shrink: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 数量徽标（多设施时显示，如「3处」） */
+.facility-item-count {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--primary);
+    background: #E8F4FD;
+    border-radius: 20px;
+    padding: 3px 10px;
+    flex-shrink: 0;
+}
+
+/* 位置列表（同站多个位置） */
+.facility-item-locs {
+    margin-top: 8px;
+    border-top: 1px solid #F0F2F5;
+    padding-top: 6px;
+}
+
+.facility-item-loc {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    padding: 4px 0 4px 14px;
+    position: relative;
+}
+
+.facility-item-loc::before {
+    content: '';
+    position: absolute;
+    left: 2px;
+    top: 11px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #B9C6DE;
+}
+
+/* 设施类型小标签（如「站外商业场所卫生间」） */
+.facility-item-type {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--primary);
+    background: rgba(0, 61, 165, 0.06);
+    border-radius: 4px;
+    padding: 0 6px;
+    margin-right: 6px;
 }
 
 /* 官方失物招领链接 */
@@ -1438,6 +1811,198 @@ img {
     width: 18px;
     height: 18px;
     flex-shrink: 0;
+}
+
+/* 便民举措长图：点击全屏查看（含双指/双击缩放），解决手机端小字不可读 */
+.bm-figure {
+    cursor: zoom-in;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.bm-hint {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 8px;
+    padding: 9px 10px;
+    background: #F0F5FF;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--primary);
+}
+
+.bm-hint svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+}
+
+.bm-note {
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: #F0F5FF;
+    border-radius: 8px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.bm-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    background: rgba(16, 20, 28, 0.95);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    overflow: auto;
+    touch-action: pan-x pan-y pinch-zoom;
+    -webkit-overflow-scrolling: touch;
+    animation: fadeIn 0.18s ease;
+}
+
+.bm-lightbox[hidden] {
+    display: none;
+}
+
+.bm-lightbox img {
+    width: 100%;
+    max-width: none; /* 放大到屏幕宽度以上才能看清小字，故不受 100% 限制 */
+    height: auto;
+    display: block;
+    cursor: zoom-in;
+}
+
+/* 放大态：宽度超屏，靠横向滚动查看小字（长图原始宽 1056px，必须超过视口才有效） */
+.bm-lightbox.zoomed {
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.bm-lightbox.zoomed img {
+    width: 260vw;
+    cursor: zoom-out;
+}
+
+.bm-lightbox-close {
+    position: fixed;
+    top: calc(10px + env(safe-area-inset-top, 0px));
+    right: 12px;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.92);
+    color: #1A1A1A;
+    font-size: 20px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+}
+
+.bm-lightbox-tip {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 26px 12px calc(12px + env(safe-area-inset-bottom, 0px));
+    text-align: center;
+    color: #fff;
+    font-size: 12px;
+    pointer-events: none;
+    /* 长图底色偏浅，纯文字压在图上看不清，加一层渐变托底 */
+    background: linear-gradient(to top, rgba(16, 20, 28, 0.85), rgba(16, 20, 28, 0));
+}
+
+/* ============================================
+   横屏 / 矮屏适配（手机横放时竖向空间紧张）
+   ============================================ */
+@media (orientation: landscape) and (max-height: 520px) {
+    :root {
+        --header-height: 46px;
+        --nav-height: 54px;
+    }
+
+    .app-header h1 {
+        font-size: 16px;
+    }
+
+    .page {
+        padding-bottom: 8px;
+    }
+
+    .result-tabs {
+        margin: 8px 0;
+    }
+
+    /* 手机横放时横向空间充裕，放开 480px 手机宽度限制，减少无谓的纵向滚动 */
+    .app-shell {
+        max-width: 900px;
+    }
+
+    .result-tab {
+        padding: 10px 0;
+        font-size: 12px;
+    }
+
+    .travel-form {
+        margin: 10px 12px;
+        padding: 14px;
+    }
+
+    .form-group {
+        margin-bottom: 10px;
+    }
+
+    .form-input {
+        height: 40px;
+    }
+
+    .form-swap {
+        margin: 6px 0;
+    }
+
+    .facility-lines .line-section-label {
+        padding: 6px 10px 4px;
+    }
+
+    .facility-lines .line-item {
+        padding: 10px 8px;
+    }
+
+    .facility-item {
+        padding: 10px 12px 10px 14px;
+        margin-bottom: 8px;
+    }
+
+    /* 横屏宽度充裕：每条线路分组内部改多列网格，
+       分组标题跨列保留，避免每张卡片拉成 758px 宽 */
+    .facility-stations:has(.facility-line-group) .facility-line-group {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 8px 10px;
+        align-items: start;
+    }
+
+    .facility-stations:has(.facility-line-group) .station-group-title {
+        grid-column: 1 / -1;
+        margin-bottom: 0;
+    }
+
+    .facility-stations:has(.facility-line-group) .facility-item {
+        margin-bottom: 0;
+        height: 100%; /* 多列网格中卡片等高，避免左右参差 */
+    }
+
+    .service-notice {
+        margin: 12px 0;
+    }
 }
 
 /* ============================================
